@@ -52,11 +52,10 @@ class mysql::server::service {
       $mysqlsocket = $options['mysqld']['socket']
     }
 
-    $test_command = ['test', '-S', shell_escape($mysqlsocket)]
     if $service_ensure != 'stopped' {
       exec { 'wait_for_mysql_socket_to_open':
-        command   => $test_command,
-        unless    => [$test_command],
+        command   => "test -S ${mysqlsocket}",
+        unless    => "test -S ${mysqlsocket}",
         tries     => '3',
         try_sleep => '10',
         require   => Service['mysqld'],
